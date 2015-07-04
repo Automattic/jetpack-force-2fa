@@ -9,9 +9,11 @@ Author URI: http://automattic.com
 */
 
 // Hide the login form
+/* Disabling via a comment so it is trivial to revert if not ready for primetime by deadline.
 add_filter('jetpack_remove_login_form', '__return_true', 9999);
 add_filter('jetpack_sso_bypass_login_forward_wpcom', '__return_true', 9999);
 add_filter('jetpack_sso_display_disclaimer', '__return_false', 9999);
+*/
 
 // Force users to use the same email address as WPCOM
 add_filter('jetpack_sso_match_by_email', '__return_true', 9999);
