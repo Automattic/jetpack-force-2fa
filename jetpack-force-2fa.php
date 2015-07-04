@@ -26,7 +26,29 @@ add_filter('wp_authenticate_user', function( $user ) {
 	return $user;
 }, 9999);
 
-// Force 2FA for admins.
-add_filter('jetpack_sso_require_two_step', function() {
-	return current_user_can('manage_options');
-}, 9999);
+function jetpack_set_two_step_for_admins( $user_data ){
+	$user = bk_temp_get_user_by_wpcom_id( $user_data->ID );
+
+	// Borrowed from Jetpack. Ignores the match_by_email setting.
+	if ( empty( $user ) ) {
+		$user = get_user_by( 'email', $user_data->email );
+	}
+
+	if ( $user && $user->has_cap('manage_options') ){
+		add_filter('jetpack_sso_require_two_step', '__return_true');
+	}
+}
+
+add_action( 'jetpack_sso_pre_handle_login', 'jetpack_set_two_step_for_admins' );
+
+// Lifted this wholly from Jetpack since it is a non-static function. Idael would be make it so in JP
+function bk_temp_get_user_by_wpcom_id( $wpcom_user_id ){
+	$user_query = new WP_User_Query( array(
+			'meta_key'   => 'wpcom_user_id',
+			'meta_value' => intval( $wpcom_user_id ),
+			'number'     => 1,
+		) );
+
+		$users = $user_query->get_results();
+		return $users ? array_shift( $users ) : null;
+}
