@@ -15,7 +15,7 @@ add_filter('jetpack_sso_bypass_login_forward_wpcom', '__return_true', 9999);
 add_filter('jetpack_sso_display_disclaimer', '__return_false', 9999);
 */
 
-// Force users to use the same email address as WPCOM
+// Allows WP.com login to a local account if it matches the local account.
 add_filter('jetpack_sso_match_by_email', '__return_true', 9999);
 
 // Completely disable the standard login form
