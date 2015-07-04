@@ -18,12 +18,15 @@ add_filter('jetpack_sso_display_disclaimer', '__return_false', 9999);
 // Allows WP.com login to a local account if it matches the local account.
 add_filter('jetpack_sso_match_by_email', '__return_true', 9999);
 
-// Completely disable the standard login form
-add_filter('wp_authenticate_user', function() {
-	return new WP_Error('nope', "You ain't logging in here.");
+// Completely disable the standard login form for admins.
+add_filter('wp_authenticate_user', function( $user ) {
+	if ( $user->has_cap('manage_options') ) {
+		return new WP_Error('wpcom-required', "Local login disabled for this account.", $user->user_login );
+	}
+	return $user;
 }, 9999);
 
-// Force 2FA for admins
+// Force 2FA for admins.
 add_filter('jetpack_sso_require_two_step', function() {
 	return current_user_can('manage_options');
 }, 9999);
