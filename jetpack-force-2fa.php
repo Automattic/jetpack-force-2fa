@@ -22,7 +22,7 @@ if ( is_multisite() ) { // Temporary for multisites until admin-only option deve
 		return new WP_Error( 'wpcom-required', "Local login disabled for this site.");
 	}, 9999);
 
-	add_filter('jetpack_sso_require_two_step', '__return_true');
+	add_filter( 'allow_password_reset', '__return_false' );
 
 } // end if multisite
 
@@ -34,6 +34,13 @@ else { // not multisite
 		}
 		return $user;
 	}, 9999);
+
+	add_filter( 'allow_password_reset', function( $allow, $user_id ) {
+		if ( user_can( $user_id, 'manage_options' ) ) {
+			return false;
+		}
+		return $allow;
+	}, 9999, 2 );
 
 	add_action( 'jetpack_sso_pre_handle_login', 'jetpack_set_two_step_for_admins' );
 } // end multisite else
