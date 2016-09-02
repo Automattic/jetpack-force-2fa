@@ -8,6 +8,17 @@ Version: 0.1
 Author URI: http://automattic.com
 */
 
+// Bail if Jetpack SSO is not active
+if ( ! class_exists( 'Jetpack' ) || ! Jetpack::is_module_active( 'sso' ) ) {
+	if ( apply_filters( 'jetpack_force_2fa_dependency_notice', true ) && current_user_can( 'manage_options' ) ) {
+		add_action( 'admin_notices', function() {
+			printf( '<div class="%1$s"><p>%2$s</p></div>', 'notice-warning', 'Jetpack Force 2FA requires Jetpack and the Jetpack SSO module.' );
+		});
+	}
+	
+	return;
+}
+
 // Allows WP.com login to a local account if it matches the local account.
 add_filter( 'jetpack_sso_match_by_email', '__return_true', 9999 );
 
