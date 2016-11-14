@@ -17,13 +17,14 @@ class Jetpack_Force_2FA {
 	}
 
 	function plugins_loaded() {
+		$this->role = apply_filters( 'jetpack_force_2fa_cap', 'manage_options' );
+		
 		// Bail if Jetpack SSO is not active
 		if ( ! class_exists( 'Jetpack' ) || ! Jetpack::is_module_active( 'sso' ) ) {
 			add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 			return;
 		}
 
-		$this->role = apply_filters( 'jetpack_force_2fa_cap', 'manage_options' );
 		$this->force_2fa();
 	}
 
