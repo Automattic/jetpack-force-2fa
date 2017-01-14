@@ -47,7 +47,7 @@ class Jetpack_Force_2FA {
 			add_filter( 'jetpack_sso_display_disclaimer', '__return_false', 9999 );
 
 			add_filter( 'wp_authenticate_user', function() {
-				return new WP_Error( 'wpcom-required', "Local login disabled for this site." );
+				return new WP_Error( 'wpcom-required', $this->get_login_error_message() );
 			}, 9999 );
 
 			add_filter( 'jetpack_sso_require_two_step', '__return_true' );
@@ -60,7 +60,7 @@ class Jetpack_Force_2FA {
 			// Completely disable the standard login form for admins.
 			add_filter( 'wp_authenticate_user', function( $user ) {
 				if ( $user->has_cap( $this->role ) ) {
-					return new WP_Error( 'wpcom-required', "Local login disabled for this account.", $user->user_login );
+					return new WP_Error( 'wpcom-required', $this->get_login_error_message(), $user->user_login );
 				}
 				return $user;
 			}, 9999);
@@ -87,6 +87,10 @@ class Jetpack_Force_2FA {
 		if ( $user && $user->has_cap( $this->role ) ){
 			add_filter('jetpack_sso_require_two_step', '__return_true');
 		}
+	}
+
+	private function get_login_error_message() {
+		return apply_filters( 'jetpack_force_2fa_login_error_message', 'For added security, please log in using your WordPress.com account.' );
 	}
 }
 
