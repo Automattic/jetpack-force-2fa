@@ -17,7 +17,7 @@ class Jetpack_Force_2FA {
 	}
 
 	function plugins_loaded() {
-		$this->role = apply_filters( 'jetpack_force_2fa_cap', 'manage_options' );
+		$this->role = apply_filters( 'jetpack_force_2fa_cap', 'edit_pages' );
 		
 		// Bail if Jetpack SSO is not active
 		if ( ! class_exists( 'Jetpack' ) || ! Jetpack::is_active() || ! Jetpack::is_module_active( 'sso' ) ) {
